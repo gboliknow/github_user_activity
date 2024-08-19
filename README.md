@@ -14,7 +14,7 @@ Installation
 
     bash
 
-git clone https://github.com/yourusername/github_user_activity.git
+git clone https://github.com/gboliknow/github_user_activity.git
 
 Navigate to the project directory:
 
