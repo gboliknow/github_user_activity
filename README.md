@@ -3,6 +3,15 @@
 
 A command-line interface tool to fetch and display GitHub user information, including profiles, activities, and repositories.
 
+## Table of Contents
+- [Features](#features)
+- [Installation](#installation)
+- [Make Commands](#make-commands)
+- [Usage](#usage)
+- [Development](#development)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Features
 
 - 🔍 Fetch user profiles
@@ -20,9 +29,39 @@ git clone https://github.com/gboliknow/github_user_activity.git
 cd github_user_activity
 ```
 
-3. Build the project:
+3. Build the project (choose one method):
+
 ```bash
+# Using go build
 go build
+
+# Using make
+make build
+```
+
+## Make Commands
+
+The project includes a Makefile with several useful commands:
+
+```bash
+make build           # Build the binary (output in bin/)
+make clean          # Clean build files
+make test           # Run tests
+make test-coverage  # Run tests with coverage report
+make deps           # Update dependencies
+make install        # Install the binary
+make run            # Run the application
+make help           # Show all available commands
+```
+
+Example usage with make:
+```bash
+# Build and run
+make build
+./bin/github_user_activity profile gboliknow
+
+# Run directly (for development)
+make run profile gboliknow
 ```
 
 ## Usage
