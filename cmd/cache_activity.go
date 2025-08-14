@@ -8,7 +8,12 @@ import (
 	"time"
 )
 
-const cacheDir = "./cache"
+var cacheDir string
+
+func init() {
+	// Use system temp directory for cache
+	cacheDir = fmt.Sprintf("%s/github_user_activity_cache", os.TempDir())
+}
 
 func InitFileForCaching() {
 	if _, err := os.Stat(cacheDir); os.IsNotExist(err) {
