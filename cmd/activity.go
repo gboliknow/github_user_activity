@@ -35,7 +35,8 @@ var ActivityCmd = &cobra.Command{
 }
 
 func init() {
-	ActivityCmd.Flags().StringP("type", "t", "all", "Type of activities to fetch (e.g., login, logout)")
+	ActivityCmd.Flags().StringP("type", "t", "all", "Type of activities to fetch (e.g., PushEvent, CreateEvent)")
+	ActivityCmd.Flags().StringP("limit", "l", "10", "Number of activities to show")
 }
 
 func fetchUserActivity(username string, activityType string) ([]Event, error) {
@@ -59,6 +60,11 @@ func fetchUserActivity(username string, activityType string) ([]Event, error) {
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("error: received status code %d", resp.StatusCode)
 	}
+
+	// Check rate limiting
+	if err := handleRateLimit(resp); err != nil {
+		return nil, err
+	}
 	var events []Event
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -72,8 +78,6 @@ func fetchUserActivity(username string, activityType string) ([]Event, error) {
 	SetToCacheFileBased(username, events)
 	return events, nil
 }
-
-
 
 func formatEvents(events []Event) {
 	writer := tabwriter.NewWriter(os.Stdout, 0, 0, 1, ' ', tabwriter.Debug)

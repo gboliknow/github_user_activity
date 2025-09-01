@@ -4,6 +4,7 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -17,6 +18,11 @@ var rootCmd = &cobra.Command{
 }
 
 func Execute() {
+	// Load configuration
+	if err := loadConfig(); err != nil {
+		fmt.Fprintf(os.Stderr, "Error loading config: %v\n", err)
+	}
+
 	err := rootCmd.Execute()
 	if err != nil {
 		os.Exit(1)
@@ -24,8 +30,17 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.PersistentFlags().StringP("output", "o", "", "Output format (table/json)")
+	rootCmd.PersistentFlags().StringP("token", "k", "", "GitHub API token") // Changed from 't' to 'k'
 	addSubcommandPalettes()
+
+	// Use config values as defaults
+	if config.OutputFormat != "" {
+		rootCmd.PersistentFlags().Lookup("output").Value.Set(config.OutputFormat)
+	}
+	if config.GitHubToken != "" {
+		rootCmd.PersistentFlags().Lookup("token").Value.Set(config.GitHubToken)
+	}
 }
 
 func addSubcommandPalettes() {

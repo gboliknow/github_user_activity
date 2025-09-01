@@ -1,180 +1,175 @@
 
 # GitHub User Activity CLI
 
-A command-line interface tool to fetch and display GitHub user information, including profiles, activities, and repositories.
+A feature-rich command-line interface tool to fetch and display GitHub user information, including profiles, activities, and repositories.
 
 ## Table of Contents
 - [Features](#features)
 - [Installation](#installation)
-- [Make Commands](#make-commands)
+- [Configuration](#configuration)
 - [Usage](#usage)
+  - [Basic Commands](#basic-commands)
+  - [Interactive Mode](#interactive-mode)
+  - [Output Formats](#output-formats)
 - [Development](#development)
 - [Contributing](#contributing)
 - [License](#license)
 
 ## Features
 
-- 🔍 Fetch user profiles
-- 📊 Display recent GitHub activities
-- 📚 List user repositories
-- 💾 Activity caching for faster subsequent queries
-- 📋 Clean, tabulated output format
+- 🔍 Fetch user profiles with detailed information
+- 📊 Display recent GitHub activities with filtering
+- 📚 List and explore user repositories
+- � Interactive mode for easy navigation
+- 🎨 Colored output for better readability
+- 💾 Smart caching for faster responses
+- ⚡ Rate limit handling for GitHub API
+- ⚙️ Configurable settings and preferences
+- 🌟 View user issues and starred repositories
 
 ## Installation
 
-1. Make sure you have Go installed on your system
+1. Ensure you have Go installed on your system
 2. Clone the repository:
 ```bash
 git clone https://github.com/gboliknow/github_user_activity.git
 cd github_user_activity
 ```
 
-3. Build the project (choose one method):
-
+3. Build the project:
 ```bash
-# Using go build
-go build
-
 # Using make
 make build
+
+# Or using go
+go build
 ```
 
-## Make Commands
+## Configuration
 
-The project includes a Makefile with several useful commands:
+Set up your preferences using the config command:
 
 ```bash
-make build           # Build the binary (output in bin/)
-make clean          # Clean build files
-make test           # Run tests
-make test-coverage  # Run tests with coverage report
-make deps           # Update dependencies
-make install        # Install the binary
-make run            # Run the application
-make help           # Show all available commands
-```
+# Set GitHub token
+go run main.go config set --token "your_github_token"
 
-Example usage with make:
-```bash
-# Build and run
-make build
-./bin/github_user_activity profile gboliknow
+# Set default user
+go run main.go config set --user "your_username"
 
-# Run directly (for development)
-make run profile gboliknow
+# Set output format
+go run main.go config set --format "json"
+
+# View current settings
+go run main.go config view
 ```
 
 ## Usage
 
-### Profile Command
-Fetch and display a GitHub user's profile information:
+### Basic Commands
 
+1. **Profile Command**:
 ```bash
-go run main.go profile <username>
-```
-
-Example:
-```bash
+# View user profile
 go run main.go profile gboliknow
+
+# With different output format
+go run main.go profile gboliknow -o json
 ```
 
-Output includes:
-- Username
-- Name
-- Bio
-- Company
-- Location
-- Email
-- Website
-- Public repository count
-- Follower and following counts
-- Account creation date
-
-### Activity Command
-View a user's recent GitHub activities:
-
+2. **Activity Command**:
 ```bash
-go run main.go activity <username>
-```
-
-Example:
-```bash
+# View recent activities
 go run main.go activity gboliknow
+
+# Filter by activity type
+go run main.go activity gboliknow -t PushEvent
+
+# Limit number of results
+go run main.go activity gboliknow -l 5
+
+# Use GitHub token
+go run main.go activity gboliknow -k "your_token"
 ```
 
-The output shows:
-- Activity type (Push, Pull Request, etc.)
-- Creation date
-- Repository name
-- Actor
-- Public/Private status
-
-### Repository Command
-List all repositories for a user:
-
+3. **Repository Command**:
 ```bash
-go run main.go repo <username>
-```
-
-Example:
-```bash
+# List repositories
 go run main.go repo gboliknow
 ```
 
-The output includes:
-- Repository name
-- Full name
-- Description
-- Fork status
+### Interactive Mode
 
-### Help Commands
-Get help for any command:
-
+Launch the interactive interface:
 ```bash
-# General help
-go run main.go --help
-
-# Command-specific help
-go run main.go activity --help
-go run main.go profile --help
-go run main.go repo --help
+go run main.go interactive
 ```
 
-## Caching
+Features available in interactive mode:
+- View profile information
+- Check recent activities
+- List repositories
+- View issues
+- Check starred repositories
+- Easy navigation with arrow keys
 
-The activity command implements caching to improve performance:
-- Activity data is cached locally
-- Cache duration: 1 minute
-- Cache location: System temporary directory
-- Cache is automatically invalidated after expiration
+### Output Formats
+
+Supported output formats:
+- **Table** (default): Colored, well-formatted tables
+- **JSON**: Machine-readable JSON format
+
+Specify format using the -o flag:
+```bash
+go run main.go profile gboliknow -o json
+```
 
 ## Development
-
-### Running Tests
-
-To run all tests:
-```bash
-go test ./... -v
-```
-
-The test suite includes:
-- Activity formatting tests
-- Cache operation tests
-- API fetching tests
 
 ### Project Structure
 ```
 github_user_activity/
 ├── cmd/
-│   ├── activity.go       # Activity command implementation
-│   ├── cache_activity.go # Caching functionality
-│   ├── profile.go        # Profile command implementation
-│   ├── repo.go          # Repository command implementation
-│   ├── root.go          # Root command configuration
+│   ├── activity.go       # Activity command
+│   ├── cache_activity.go # Caching system
+│   ├── colors.go        # Color formatting
+│   ├── config.go        # Configuration
+│   ├── config_cmd.go    # Config command
+│   ├── interactive.go   # Interactive mode
+│   ├── interactive_cmd.go # Interactive command
+│   ├── output.go        # Output formatting
+│   ├── profile.go       # Profile command
+│   ├── rate_limit.go    # Rate limiting
+│   ├── repo.go          # Repository command
+│   ├── root.go          # Root command
+│   ├── stars_issues.go  # Stars and issues
 │   └── types.go         # Data structures
-├── cache/               # Cache storage directory
-├── main.go             # Entry point
+├── main.go              # Entry point
+├── Makefile            # Build commands
 └── README.md           # Documentation
+```
+
+### Available Make Commands
+```bash
+make build          # Build the binary
+make test          # Run tests
+make clean         # Clean build files
+make test-coverage # Run tests with coverage
+make deps          # Update dependencies
+make install       # Install the binary
+make run          # Run the application
+make help         # Show all commands
+```
+
+### Running Tests
+```bash
+# Run all tests
+go test ./... -v
+
+# Run specific tests
+go test -v ./cmd -run TestFetchUserActivity
+
+# Run tests with coverage
+make test-coverage
 ```
 
 ## Contributing
@@ -185,93 +180,15 @@ github_user_activity/
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
+## Acknowledgments
+
+- [Cobra](https://github.com/spf13/cobra) for the CLI framework
+- [Go](https://golang.org/) for the programming language
+- [promptui](https://github.com/manifoldco/promptui) for interactive prompts
+- [fatih/color](https://github.com/fatih/color) for colored output
+- Project inspired by [roadmap.sh projects](https://roadmap.sh/projects/github-user-activity)
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-=======
-github_user_activity CLI
-
-github_user_activity is a CLI tool built in Go for fetching and displaying GitHub user data. It supports retrieving user activity, profile information, and repositories, and includes caching functionality for improved performance.
-Features
-
-    Fetch User Activity: Get recent activity for a specified GitHub user.
-    Fetch User Profile: Retrieve and display user profile information.
-    Fetch User Repositories: List all repositories for a specified GitHub user.
-    Caching: Save and retrieve data using file-based caching to reduce API calls and improve performance.
-
-Installation
-
-    Clone the repository:
-
-    bash
-
-git clone https://github.com/gboliknow/github_user_activity.git
-
-Navigate to the project directory:
-
-bash
-
-cd github_user_activity
-
-Build the CLI tool:
-
-bash
-
-    make build
-
-    The executable will be located in the bin directory.
-
-Usage
-Fetch User Activity
-
-bash
-
-./bin/github_user_activity activity [username] --type [activityType]
-
-    [username]: GitHub username.
-    --type [activityType]: Optional filter for activity type (e.g., "PushEvent").
-
-Fetch User Profile
-
-bash
-
-./bin/github_user_activity profile [username]
-
-    [username]: GitHub username.
-
-Fetch User Repositories
-
-bash
-
-./bin/github_user_activity repo [username]
-
-    [username]: GitHub username.
-
-Commands
-
-    activity [username]: Fetches user activity.
-    profile [username]: Fetches user profile information.
-    repo [username]: Fetches user repositories.
-
-Caching
-
-The application uses file-based caching to store and retrieve data. Cached data will be saved in the cache directory and will be used to improve performance for subsequent requests.
-Development
-
-To contribute to the project:
-
-    Fork the repository.
-    Create a new branch (git checkout -b feature/YourFeature).
-    Commit your changes (git commit -am 'Add new feature').
-    Push to the branch (git push origin feature/YourFeature).
-    Create a new Pull Request.
-
-License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-Acknowledgments
-
-    Cobra for the CLI framework.
-    Go for the programming language.
-https://roadmap.sh/projects/github-user-activity****
 
